@@ -1,41 +1,24 @@
 package com.pioneer.aaron.gentlealarm;
 
-import android.content.Context;
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Message;
-import android.os.Vibrator;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.Toast;
 
+import com.melnykov.fab.FloatingActionButton;
 
+import java.util.LinkedList;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
-    private Vibrator vibrator;
-    private long[] pattern = {100, 40, 100, 40};
-
-    private Button button;
-    private boolean VIBRATE_ON = false;
-
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 0:
-                    vibrator.cancel();
-                    break;
-                case 1:
-                    vibrator.vibrate(pattern, 2);
-                    break;
-            }
-        }
-    };
-
+    private LinkedList clockLinkedList;
+    private ListView clockListView;
+    private ClockListAdapter adapter;
+    private FloatingActionButton floatingActionButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,18 +30,23 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void init() {
-        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
+        clockListView = (ListView) findViewById(R.id.clocklistView);
+        clockLinkedList = new LinkedList();
+        adapter = new ClockListAdapter(getApplicationContext(), clockLinkedList);
+        clockListView.setAdapter(adapter);
+
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
+        floatingActionButton.attachToListView(clockListView);
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (VIBRATE_ON) {
-                    VIBRATE_ON = false;
-                    handler.sendEmptyMessage(0);
-                } else {
-                    VIBRATE_ON = true;
-                    handler.sendEmptyMessage(1);
-                }
+                Toast.makeText(MainActivity.this, "fab", Toast.LENGTH_SHORT).show();
+            }
+        });
+        clockListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
             }
         });
     }
@@ -66,7 +54,6 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        vibrator.cancel();
     }
 
     @Override
@@ -90,4 +77,5 @@ public class MainActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }

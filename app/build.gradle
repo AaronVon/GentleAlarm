@@ -22,4 +22,11 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.github.serchinastico:coolswitch:1.0.1'
+    compile 'com.melnykov:floatingactionbutton:1.3.0'
+}
+repositories {
+    maven {
+        url "https://jitpack.io"
+    }
 }
